@@ -9,7 +9,6 @@ app.use(bodyParser.urlencoded({ // getting the data from url
 }));
 app.use('/', routes);
 
-
 app.listen(3015, function() {
     console.log("Server started at port number: 3015");
 });
