@@ -6,11 +6,11 @@ module.exports = function() {
     var conn = mongoose.connect('mongodb://admin:123@ds151232.mlab.com:51232/sumit');
 
     var details = mongoose.Schema({
-        username: { type: String, unique: true },
-        email: { type: String, unique: true },
-        password: String,
-        firstname: String,
-        lastname: String
+        username: { type: String, required: true, unique: true },
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        firstname: { type: String, required: true },
+        lastname: { type: String, required: true }
     }, {
         collection: 'details',
         strict: true

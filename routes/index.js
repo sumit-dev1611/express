@@ -10,7 +10,7 @@ router.post('/form/', function(req, res, next) {
 
     validation(req.body, function(err, data) {
         if (err) {
-            res.send(err);
+            res.status(400).json(err);
         } else {
 
             var detail = new req.fetch({
@@ -22,9 +22,9 @@ router.post('/form/', function(req, res, next) {
             })
             detail.save(function(err, data) {
                 if (err) {
-                    res.send(err.message);
+                    res.status(400).json(err.message);
                 } else
-                    res.send('Data Inserted')
+                    res.json('Data Inserted')
             })
         }
     })
