@@ -6,13 +6,12 @@ var validation = require('./validation');
 
 var MongoClient = require('mongodb').MongoClient;
 
-router.post('/form/', function(req, res, next) {
+router.post('/user/register/', function(req, res, next) {
 
     validation(req.body, function(err, data) {
         if (err) {
-            res.status(400).json(err);
+            next(err);
         } else {
-
             var detail = new req.fetch({
                 username: data.username,
                 email: data.email,
@@ -22,7 +21,8 @@ router.post('/form/', function(req, res, next) {
             })
             detail.save(function(err, data) {
                 if (err) {
-                    res.status(400).json(err.message);
+                    next(err);
+                    //res.status(400).json(err.message);
                 } else
                     res.json('Data Inserted')
             })
