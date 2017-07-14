@@ -12,7 +12,7 @@ module.exports = function(body, callback) {
         callback("enter password!!", "");
     else if (body.cpassword == null || body.cpassword == "")
         callback("empty confirm password!!", "");
-    else if (!(md5(body.password) == md5(body.cpassword)))
+    else if (!body.password == body.cpassword)
         callback("You have entered passwords do not match !", "");
     else if (body.firstname == null || body.firstname == "")
         callback("empty firstname!!", "");

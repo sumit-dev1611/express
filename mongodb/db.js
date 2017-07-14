@@ -12,7 +12,7 @@ module.exports = function() {
         firstname: { type: String, required: true },
         lastname: { type: String, required: true }
     }, {
-        collection: 'details',
+        collection: 'users',
         strict: true
     });
 
