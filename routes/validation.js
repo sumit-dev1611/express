@@ -1,5 +1,4 @@
 module.exports = function(body, callback) {
-    console.log(body)
 
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (body.username == null || body.username == "")
