@@ -1,32 +1,34 @@
 var express = require('express');
+var app = express();
 var router = express.Router();
 var mongoose = require('mongoose');
+var validation = require('./validation');
+
 var MongoClient = require('mongodb').MongoClient;
 
-router.post('/form/:name', function(req, res, next) {
-    //console.log(req.params)
-    // console.log("gdcfs");
-    //console.log(req.body)
-    // json_data = { "name": "amita", "pass": "12345" }
-    var detail = new req.fetch({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        cpassword: req.body.cpassword,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname
+router.post('/form/', function(req, res, next) {
+
+    var userdatail;
+    validation(req.body, function(err, data) {
+        if (err) {
+            res.send(err);
+        } else {
+            userdatail = data;
+            var detail = new req.fetch({
+                username: userdatail.username,
+                email: userdatail.email,
+                password: userdatail.password,
+                firstname: userdatail.firstname,
+                lastname: userdatail.lastname
+            })
+            detail.save(function(err, data) {
+                if (err) {
+                    res.send(err.message);
+                } else
+                    res.send('Data Inserted')
+            })
+        }
     })
-    detail.save(function(err, data) {
-            if (err)
-                console.log(err)
-            res.json('Data Inserted')
-            console.log(data)
-
-        })
-        // res.json(json_data)
-
 });
 
-
-// });
 module.exports = router;
