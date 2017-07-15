@@ -8,7 +8,7 @@ var MongoClient = require('mongodb').MongoClient;
 
 router.post('/user/register/', function(req, res, next) {
 
-    validation(req.body, function(err, data) {
+    validation.validateregistration(req.body, function(err, data) {
         if (err) {
             next(err);
         } else {
@@ -31,3 +31,28 @@ router.post('/user/register/', function(req, res, next) {
 });
 
 module.exports = router;
+
+router.post('/user/login/', function(req, res, next) {
+
+    validation.validatelogin(req.body, function(err, data) {
+        if (err) {
+            next(err);
+        } else {
+            req.fetch.find({ username: data.username }, function(err, docs) {
+                if (docs.length) {
+                    req.fetch.find({ password: data.password }, function(err, docs1) {
+                        if (docs1.length){
+                            res.json('You are logged in!!!     Your access_token is:' + docs[0]._id)
+                        }else
+                            next(500);
+                    });
+
+                } else {
+                    next(500);
+                }
+
+            });
+
+        }
+    });
+});

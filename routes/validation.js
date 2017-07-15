@@ -1,5 +1,7 @@
 var md5 = require('md5');
-module.exports = function(body, callback) {
+var exports = module.exports = {};
+
+exports.validateregistration = function(body, callback) {
 
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (body.username == null || body.username == "")
@@ -12,7 +14,7 @@ module.exports = function(body, callback) {
         callback("enter password!!", "");
     else if (body.cpassword == null || body.cpassword == "")
         callback("empty confirm password!!", "");
-    else if (!body.password == body.cpassword)
+    else if (!(body.password == body.cpassword))
         callback("You have entered passwords do not match !", "");
     else if (body.firstname == null || body.firstname == "")
         callback("empty firstname!!", "");
@@ -23,4 +25,14 @@ module.exports = function(body, callback) {
         callback("", body);
     }
 
+};
+exports.validatelogin = function(body, callback) {
+    if (body.username == null || body.username == "")
+        callback("empty username!!", "");
+    else if (body.password == null || body.password == "")
+        callback("enter password!!", "");
+    else {
+        body.password = md5(body.password);
+        callback("", body);
+    }
 };
