@@ -1,9 +1,6 @@
 var express = require('express');
-var app = express();
 var router = express.Router();
-var mongoose = require('mongoose');
 var validation = require('./validation');
-var MongoClient = require('mongodb').MongoClient;
 
 router.post('/user/register/', function(req, res, next) {
     validation.validateRegistration(req.body, function(err, data) {
@@ -22,7 +19,6 @@ router.post('/user/register/', function(req, res, next) {
                     next(err);
                 } else {
                     res.json(data)
-
                 }
             })
         }
@@ -38,25 +34,25 @@ router.post('/user/login/', function(req, res, next) {
             req.fetch.findOne({ username: data.username, password: data.password }, function(err, docs) {
                 if (err) {
                     next(err);
-                }
-                if (docs)
+                } else if (docs) {
                     res.json('You are logged in!!!     Your access_token is : ' + docs._id)
-                else
+                } else {
                     res.json('Not a user !!!     Get registered')
+                }
             });
         }
     });
 });
 
-router.get('/user/get/:access_token', function(req, res,next) {
+router.get('/user/get/:access_token', function(req, res, next) {
     req.fetch.findOne({ _id: req.params.access_token }, function(err, data) {
         if (err) {
             next(err);
-        } else if(data){
+        } else if (data) {
             res.json(data)
-        }
-        else
+        } else {
             res.json('data not found');
+        }
     });
 });
 
