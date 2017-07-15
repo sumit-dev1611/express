@@ -3,12 +3,10 @@ var app = express();
 var router = express.Router();
 var mongoose = require('mongoose');
 var validation = require('./validation');
-
 var MongoClient = require('mongodb').MongoClient;
 
 router.post('/user/register/', function(req, res, next) {
-
-    validation.validateregistration(req.body, function(err, data) {
+    validation.validateRegistration(req.body, function(err, data) {
         if (err) {
             next(err);
         } else {
@@ -22,7 +20,6 @@ router.post('/user/register/', function(req, res, next) {
             detail.save(function(err, data) {
                 if (err) {
                     next(err);
-                    //res.status(400).json(err.message);
                 } else
                     res.json('Data Inserted')
             })
@@ -30,29 +27,20 @@ router.post('/user/register/', function(req, res, next) {
     })
 });
 
-module.exports = router;
 
 router.post('/user/login/', function(req, res, next) {
-
-    validation.validatelogin(req.body, function(err, data) {
+    validation.validateLogin(req.body, function(err, data) {
         if (err) {
             next(err);
         } else {
-            req.fetch.find({ username: data.username }, function(err, docs) {
-                if (docs.length) {
-                    req.fetch.find({ password: data.password }, function(err, docs1) {
-                        if (docs1.length){
-                            res.json('You are logged in!!!     Your access_token is:' + docs[0]._id)
-                        }else
-                            next(500);
-                    });
-
-                } else {
-                    next(500);
-                }
-
+            req.fetch.findOne({ username: data.username ,password: data.password }, function(err, docs) {
+                if (err) {
+                    next(err);
+                } else
+                   res.json('You are logged in!!!     Your access_token is : ' + docs._id)
             });
-
         }
     });
 });
+
+module.exports = router;

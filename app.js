@@ -12,14 +12,9 @@ app.use(errorHandler);
 
 function errorHandler(err, req, res, next) {
     if (err) {
-        res.status(404).json({ error: err });
-        res.json(err.message);
-    }
-    else if(500){
         res.status(500).json({ error: err });
         res.json(err.message);
     }
-
 }
 
 app.listen(3015, function() {
