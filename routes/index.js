@@ -3,12 +3,10 @@ var app = express();
 var router = express.Router();
 var mongoose = require('mongoose');
 var validation = require('./validation');
-
 var MongoClient = require('mongodb').MongoClient;
 
 router.post('/user/register/', function(req, res, next) {
-
-    validation(req.body, function(err, data) {
+    validation.validateRegistration(req.body, function(err, data) {
         if (err) {
             next(err);
         } else {
@@ -22,12 +20,32 @@ router.post('/user/register/', function(req, res, next) {
             detail.save(function(err, data) {
                 if (err) {
                     next(err);
-                    //res.status(400).json(err.message);
-                } else
-                    res.json('Data Inserted')
+                } else {
+                    res.json(data)
+                    
+                }
             })
         }
     })
+});
+
+
+router.post('/user/login/', function(req, res, next) {
+    validation.validateLogin(req.body, function(err, data) {
+        if (err) {
+            next(err);
+        } else {
+            req.fetch.findOne({ username: data.username, password: data.password }, function(err, docs) {
+                if (err) {
+                    next(err);
+                } 
+                if(docs)
+                res.json('You are logged in!!!     Your access_token is : ' + docs._id)
+            else
+                res.json('Not a user !!!     Get registered')
+            });
+        }
+    });
 });
 
 module.exports = router;
