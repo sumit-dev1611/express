@@ -1,6 +1,6 @@
 var md5 = require('md5');
 module.exports = {
-    validateRegistration :function(body, callback) {
+    validateRegistration :(body, callback)=> {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (body.username == null || body.username == "")
             callback("empty username!!", "");
@@ -24,7 +24,7 @@ module.exports = {
         }
     },
 
-    validateLogin :function(body, callback) {
+    validateLogin :(body, callback)=> {
         if (body.username == null || body.username == "")
             callback("empty username!!", "");
         else if (body.password == null || body.password == "")

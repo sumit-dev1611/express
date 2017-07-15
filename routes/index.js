@@ -48,13 +48,15 @@ router.post('/user/login/', function(req, res, next) {
     });
 });
 
-router.get('/user/get', function(req, res) {
-    req.fetch.findOne({ _id: req.param('id') }, function(err, docs) {
+router.get('/user/get/:access_token', function(req, res,next) {
+    req.fetch.findOne({ _id: req.params.access_token }, function(err, data) {
         if (err) {
-            next(err)
+            next(err);
+        } else if(data){
+            res.json(data)
         }
-        if (docs)
-            res.json(docs)
+        else
+            res.json('data not found');
     });
 });
 
