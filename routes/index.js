@@ -38,8 +38,11 @@ router.post('/user/login/', function(req, res, next) {
             req.fetch.findOne({ username: data.username, password: data.password }, function(err, docs) {
                 if (err) {
                     next(err);
-                } else
-                    res.json('You are logged in!!!     Your access_token is : ' + docs._id)
+                } 
+                if(docs)
+                res.json('You are logged in!!!     Your access_token is : ' + docs._id)
+            else
+                res.json('Not a user !!!     Get registered')
             });
         }
     });
