@@ -22,7 +22,7 @@ router.post('/user/register/', function(req, res, next) {
                     next(err);
                 } else {
                     res.json(data)
-                    
+
                 }
             })
         }
@@ -38,13 +38,23 @@ router.post('/user/login/', function(req, res, next) {
             req.fetch.findOne({ username: data.username, password: data.password }, function(err, docs) {
                 if (err) {
                     next(err);
-                } 
-                if(docs)
-                res.json('You are logged in!!!     Your access_token is : ' + docs._id)
-            else
-                res.json('Not a user !!!     Get registered')
+                }
+                if (docs)
+                    res.json('You are logged in!!!     Your access_token is : ' + docs._id)
+                else
+                    res.json('Not a user !!!     Get registered')
             });
         }
+    });
+});
+
+router.get('/user/get', function(req, res) {
+    req.fetch.findOne({ _id: req.param('id') }, function(err, docs) {
+        if (err) {
+            next(err)
+        }
+        if (docs)
+            res.json(docs)
     });
 });
 
