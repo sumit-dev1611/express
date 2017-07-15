@@ -20,8 +20,10 @@ router.post('/user/register/', function(req, res, next) {
             detail.save(function(err, data) {
                 if (err) {
                     next(err);
-                } else
-                    res.json('Data Inserted')
+                } else {
+                    res.json(data)
+                    
+                }
             })
         }
     })
@@ -33,11 +35,11 @@ router.post('/user/login/', function(req, res, next) {
         if (err) {
             next(err);
         } else {
-            req.fetch.findOne({ username: data.username ,password: data.password }, function(err, docs) {
+            req.fetch.findOne({ username: data.username, password: data.password }, function(err, docs) {
                 if (err) {
                     next(err);
                 } else
-                   res.json('You are logged in!!!     Your access_token is : ' + docs._id)
+                    res.json('You are logged in!!!     Your access_token is : ' + docs._id)
             });
         }
     });
