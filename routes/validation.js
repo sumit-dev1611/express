@@ -1,6 +1,5 @@
 var md5 = require('md5');
 module.exports = {
-
     validateRegistration :function(body, callback) {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (body.username == null || body.username == "")
