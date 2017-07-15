@@ -56,4 +56,22 @@ router.get('/user/get/:access_token', function(req, res, next) {
     });
 });
 
+router.get('/user/delete/:access_token', function(req, res, next) {
+    req.fetch.findOne({ _id: req.params.access_token }, function(err, data) {
+        if (err) {
+            next(err);
+        } else if (data) {
+            req.fetch.remove({ "_id": data._id }, function(err, result) {
+                if (err) {
+                    next(err);
+                } else {
+                    res.json('data deleted');
+                }
+            });
+        } else {
+            res.json('data not found');
+        }
+    });
+});
+
 module.exports = router;
