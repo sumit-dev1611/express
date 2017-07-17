@@ -1,5 +1,5 @@
 var express = require('express');
-var router = express.Router();
+var router = express();
 var validation = require('./validation');
 
 router.post('/user/register/', function(req, res, next) {
@@ -56,20 +56,25 @@ router.get('/user/get/:access_token', function(req, res, next) {
     });
 });
 
-router.get('/user/delete/:access_token', function(req, res, next) {
-    req.fetch.findOne({ _id: req.params.access_token }, function(err, data) {
+
+router.all('/user/delete/:access_token', function(req, res, next) {
+    req.fetch.remove({ "_id": req.params.access_token }, function(err, result) {
+        if (err) {
+            next(err);
+        } else {
+            res.json('data deleted');
+        }
+    });
+});
+
+router.get('/user/list/:page', function(req, res, next) {
+    req.fetch.find({}).skip((req.params.page) * 10).limit(10).exec(function(err, data) {
         if (err) {
             next(err);
         } else if (data) {
-            req.fetch.remove({ "_id": data._id }, function(err, result) {
-                if (err) {
-                    next(err);
-                } else {
-                    res.json('data deleted');
-                }
-            });
+            res.json(data);
         } else {
-            res.json('data not found');
+            res.json("data can't be fetched....ERROR !! ")
         }
     });
 });
