@@ -56,7 +56,8 @@ router.get('/user/get/:access_token', function(req, res, next) {
     });
 });
 
-router.get('/user/delete/:access_token', function(req, res, next) {
+
+router.put('/user/delete/:access_token', function(req, res, next) { 
     req.fetch.findOne({ _id: req.params.access_token }, function(err, data) {
         if (err) {
             next(err);
@@ -72,6 +73,19 @@ router.get('/user/delete/:access_token', function(req, res, next) {
             res.json('data not found');
         }
     });
+});
+
+router.get('/user/list/:page', function(req, res, next) {
+    var start = (req.params.page) * 10;
+    req.fetch.find(function(err, data) {
+        if (err) {
+            next(err);
+        } else if (data) {
+            res.json(data);
+        } else {
+            res.json("data can't be fetched....ERROR !! ")
+        }
+    }).skip(start).limit(10);
 });
 
 module.exports = router;
