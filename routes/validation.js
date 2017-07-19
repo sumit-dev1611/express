@@ -33,6 +33,27 @@ module.exports = {
             body.password = md5(body.password);
             callback("", body);
         }
+    },
+
+    validateAddress: (body, callback) => {
+        if (body.access_token == null || body.access_token == "") {
+            callback("enter access token", null);
+        } else if (body.user_id == null || body.user_id == "") {
+            callback("enter user id", null);
+        } else if (body.address1 == null | body.address1 == "") {
+            callback("eneter address", null);
+        } else if (body.city == null || body.city == "") {
+            callback("enter city", null);
+        } else if (body.state == null || body.state == "") {
+            callback("enter state", null);
+        } else if (body.pin_code == null || body.pin_code == "") {
+            callback("enter pin_code", null);
+        } else if (body.phone_no == null || body.phone_no == "") {
+            callback("enter phone no", null)
+        } else {
+            callback(null, body)
+        }
+
     }
-    
+
 };
