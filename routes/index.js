@@ -116,7 +116,7 @@ router.get('/user/list/:page', function(req, res, next) {
 });
 
 router.post('/user/address/:access_token', function(req, res, next) {
-   
+    
     validation.validateAddress(req.body, function(err, data) {
         if (err) {
             next(err);
