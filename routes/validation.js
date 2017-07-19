@@ -36,17 +36,13 @@ module.exports = {
     },
 
     validateAddress: (body, callback) => {
-        if (body.access_token == null || body.access_token == "") {
-            callback("enter access token", null);
-        } else if (body.user_id == null || body.user_id == "") {
+        if (body.user_id == null || body.user_id == "") {
             callback("enter user id", null);
-        } else if (body.address1 == null | body.address1 == "") {
-            callback("eneter address", null);
-        } else if (body.city == null || body.city == "") {
+        } else if (body.city1 == null || body.city1 == "") {
             callback("enter city", null);
-        } else if (body.state == null || body.state == "") {
+        } else if (body.state1 == null || body.state1 == "") {
             callback("enter state", null);
-        } else if (body.pin_code == null || body.pin_code == "") {
+        } else if (body.pin_code1 == null || body.pin_code1 == "") {
             callback("enter pin_code", null);
         } else if (body.phone_no == null || body.phone_no == "") {
             callback("enter phone no", null)

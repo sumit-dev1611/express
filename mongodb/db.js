@@ -25,26 +25,33 @@ module.exports = function() {
         strict: true
     });
 
-    var user_address=mongoose.Schema({
+    var user_address = mongoose.Schema({
         user_id: { type: String, required: true },
-        address: [String],
-        city:String,
-        state:String,
-        pin_code:Number,
-        phone_no:Number
-    },{
-        collection:'address',
-        strict:true
+        address: [{
+            city: String,
+            state: String,
+            pin_code: Number
+        }],
+        phone_no: Number
+    }, {
+        collection: 'address',
+        strict: true
     });
+
+    // var address_Schema = mongoose.Schema({
+    //     city: String,
+    //     state: String,
+    //     pin_code: Number
+    // });
 
     var users_model = conn.model('users', details);
     var access_token_model = conn.model('access_token', access_detail);
-    var user_address_model=conn.model('address', user_address);
+    var user_address_model = conn.model('address', user_address);
 
     return function(req, res, next) {
         req.users_collection = users_model;
         req.access_token_collection = access_token_model;
-        req.address_collection=user_address_model;
+        req.address_collection = user_address_model;
         next();
     }
 }

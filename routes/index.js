@@ -115,33 +115,26 @@ router.get('/user/list/:page', function(req, res, next) {
     });
 });
 
-router.post('/user/address/', function(req, res, next) {
-               
-    validation.validateAddress(req.body, function(err, data) {      
-        if (err) { 
+router.post('/user/address/:access_token', function(req, res, next) {
+
+    validation.validateAddress(req.body, function(err, data) {
+        if (err) {
             next(err);
         } else {
-            req.access_token_collection.findOne({ access_token: data.access_token }, function(err, access_token_data) {                
-                if (err) {   
+            req.access_token_collection.findOne({ access_token: req.params.access_token }, function(err, access_token_data) {
+                if (err) {
                     next(err);
                 } else if (access_token_data) {
-                    if(data.address2){
-                        var input_address=[data.address1,data.address2];
-                    }
-                    else{
-                        var input_address=[data.address1];
-                    }
                     var userAddress = new req.address_collection({
                         user_id: data.user_id,
-                        address: input_address,
-                        city: data.city,
-                        state: data.state,
-                        pin_code: data.pin_code,
+                        address: [{ city: data.city1, state: data.state1, pin_code: data.pin_code1 },
+                            { city: data.city2, state: data.state2, pin_code: data.pin_code2 }
+                        ],
                         phone_no: data.phone_no
                     });
                     userAddress.save(function(err, data) {
                         if (err) {
-                                next(err);
+                            next(err);
                         } else {
                             res.json(data)
                         }
