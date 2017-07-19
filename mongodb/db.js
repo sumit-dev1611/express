@@ -16,9 +16,21 @@ module.exports = function() {
         strict: true
     });
 
-    var fetch_data = conn.model(fetch_data, details);
+    var access_detail = mongoose.Schema({
+        user_id: { type: String, required: true },
+        access_token: { type: String, required: true },
+        expiry: { type: String, required: true },
+    }, {
+        collection: 'access_token',
+        strict: true
+    });
+
+    var users_model = conn.model('users', details);
+    var access_token_model = conn.model('access_token', access_detail);
+
     return function(req, res, next) {
-        req.fetch = fetch_data;
+        req.users_collection = users_model;
+        req.access_token_collection = access_token_model;
         next();
     }
 }
