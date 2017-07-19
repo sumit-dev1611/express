@@ -116,7 +116,7 @@ router.get('/user/list/:page', function(req, res, next) {
 });
 
 router.post('/user/address/:access_token', function(req, res, next) {
-
+   
     validation.validateAddress(req.body, function(err, data) {
         if (err) {
             next(err);
@@ -127,9 +127,7 @@ router.post('/user/address/:access_token', function(req, res, next) {
                 } else if (access_token_data) {
                     var userAddress = new req.address_collection({
                         user_id: data.user_id,
-                        address: [{ city: data.city1, state: data.state1, pin_code: data.pin_code1 },
-                            { city: data.city2, state: data.state2, pin_code: data.pin_code2 }
-                        ],
+                        address: data.address,
                         phone_no: data.phone_no
                     });
                     userAddress.save(function(err, data) {
