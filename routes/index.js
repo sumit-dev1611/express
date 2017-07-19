@@ -8,7 +8,7 @@ router.post('/user/register/', function(req, res, next) {
         if (err) {
             next(err);
         } else {
-            var detail = new req.fetch({
+            var detail = new req.users_collection({
                 username: data.username,
                 email: data.email,
                 password: data.password,
@@ -57,12 +57,12 @@ router.post('/user/login/', function(req, res, next) {
                         } else {
                             var expiryDate = new Date();
                             expiryDate.setHours(expiryDate.getHours() + 1);
-                            var accdetail = new req.access_token_collection({
+                            var access_Detail = new req.access_token_collection({
                                 user_id: users_data._id,
                                 access_token: md5(new Date()),
                                 expiry: expiryDate
                             });
-                            accdetail.save(function(err, data) {
+                            access_Detail.save(function(err, data) {
                                 if (err) {
                                     next(err);
                                 } else {
@@ -81,7 +81,7 @@ router.post('/user/login/', function(req, res, next) {
 
 
 router.get('/user/get/:access_token', function(req, res, next) {
-    req.fetch.findOne({ _id: req.params.access_token }, function(err, data) {
+    req.users_collection.findOne({ _id: req.params.access_token }, function(err, data) {
         if (err) {
             next(err);
         } else if (data) {
@@ -94,7 +94,7 @@ router.get('/user/get/:access_token', function(req, res, next) {
 
 
 router.all('/user/delete/:access_token', function(req, res, next) {
-    req.fetch.remove({ "_id": req.params.access_token }, function(err, result) {
+    req.users_collection.remove({ "_id": req.params.access_token }, function(err, result) {
         if (err) {
             next(err);
         } else {
@@ -104,7 +104,7 @@ router.all('/user/delete/:access_token', function(req, res, next) {
 });
 
 router.get('/user/list/:page', function(req, res, next) {
-    req.fetch.find({}).skip((req.params.page) * 10).limit(10).exec(function(err, data) {
+    req.users_collection.find({}).skip((req.params.page) * 10).limit(10).exec(function(err, data) {
         if (err) {
             next(err);
         } else if (data) {
