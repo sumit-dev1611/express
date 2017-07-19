@@ -42,17 +42,23 @@ module.exports = {
         } else if (body.phone_no == null || body.phone_no == "") {
             callback("enter phone no", null)
         } else {
-            _.forEach(body.address, function(data) {
-                if (data.city == null || data.city == "") {
-                    callback("enter city", null);
-                } else if (data.state == null || data.state == "") {
-                    callback("enter state", null);
-                } else if (data.pin_code == null || data.pin_code == "") {
-                    callback("enter pin_code", null);
-                } else {}
-            });
+            if (body.address.length) {
+                _.forEach(body.address, function(data, key) {
+                    if (data.city == null || data.city == "") {
+                        callback("enter city", null);
+                    } else if (data.state == null || data.state == "") {
+                        callback("enter state", null);
+                    } else if (data.pin_code == null || data.pin_code == "") {
+                        callback("enter pin_code", null);
+                    } else if (body.address.length == (key + 1)) {
+                        callback(null, body);
+                    }
+                });
+            } else {
+                callback("enter address", null)
+
+            }
         }
-        callback(null, body)
     }
 
 };
