@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express();
+var md5 = require('md5')
 var validation = require('./validation');
 
 router.post('/user/register/', function(req, res, next) {
@@ -31,11 +32,45 @@ router.post('/user/login/', function(req, res, next) {
         if (err) {
             next(err);
         } else {
-            req.fetch.findOne({ username: data.username, password: data.password }, function(err, docs) {
+            req.users_collection.findOne({ username: data.username, password: data.password }, function(err, users_data) {
                 if (err) {
                     next(err);
-                } else if (docs) {
-                    res.json('You are logged in!!!     Your access_token is : ' + docs._id)
+                } else if (users_data) {
+                    req.access_token_collection.findOne({ user_id: users_data._id }, function(err, access_token_data) {
+                        if (err) {
+                            next(err);
+                        } else if (access_token_data) {
+                            var expiryDate = new Date();
+                            expiryDate.setHours(expiryDate.getHours() + 1);
+                            req.access_token_collection.findOneAndUpdate({ user_id: access_token_data.user_id }, {
+                                    $set: {
+                                        expiry: expiryDate
+                                    }
+                                },
+                                function(err, data) {
+                                    if (err) {
+                                        next(err);
+                                    } else {
+                                        res.json(data)
+                                    }
+                                });
+                        } else {
+                            var expiryDate = new Date();
+                            expiryDate.setHours(expiryDate.getHours() + 1);
+                            var accdetail = new req.access_token_collection({
+                                user_id: users_data._id,
+                                access_token: md5(new Date()),
+                                expiry: expiryDate
+                            });
+                            accdetail.save(function(err, data) {
+                                if (err) {
+                                    next(err);
+                                } else {
+                                    res.json(data)
+                                }
+                            });
+                        }
+                    });
                 } else {
                     res.json('Not a user !!!     Get registered')
                 }
@@ -43,6 +78,7 @@ router.post('/user/login/', function(req, res, next) {
         }
     });
 });
+
 
 router.get('/user/get/:access_token', function(req, res, next) {
     req.fetch.findOne({ _id: req.params.access_token }, function(err, data) {
