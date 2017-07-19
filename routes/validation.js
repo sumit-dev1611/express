@@ -35,27 +35,25 @@ module.exports = {
         }
     },
 
-    validateAddress: (body, callback) => {
+  validateAddress: (body, callback) => {
         if (body.user_id == null || body.user_id == "") {
             callback("enter user id", null);
-        } else if (body.address[0].city == null || body.address[0].city == "") {
-            callback("enter city", null);
-        } else if (body.address[0].state == null || body.address[0].state == "") {
-            callback("enter state", null);
-        } else if (body.address[0].pin_code == null || body.address[0].pin_code == "") {
-            callback("enter pin_code", null);
-        } else if (body.address[1].city == null || body.address[1].city == "") {
-            callback("enter city", null);
-        } else if (body.address[1].state == null || body.address[1].state == "") {
-            callback("enter state", null);
-        } else if (body.address[1].pin_code == null || body.address[1].pin_code == "") {
-            callback("enter pin_code", null);
         } else if (body.phone_no == null || body.phone_no == "") {
             callback("enter phone no", null)
         } else {
+            for (var i = 0; i < body.address.length;) {
+                if (body.address[i].city == null || body.address[i].city == "") {
+                    callback("enter city", null);
+                } else if (body.address[i].state == null || body.address[i].state == "") {
+                    callback("enter state", null);
+                } else if (body.address[i].pin_code == null || body.address[i].pin_code == "") {
+                    callback("enter pin_code", null);
+                } else {
+                    i++;
+                }
+            }
             callback(null, body)
         }
 
     }
-
 };
