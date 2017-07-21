@@ -2,7 +2,8 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var routes = require('./routes/index.js');
-var db = require('./mongodb/db.js')
+var db = require('./mongodb/db.js');
+
 app.use(db())
 app.use(bodyParser.urlencoded({
     extended: true
@@ -12,8 +13,7 @@ app.use(errorHandler);
 
 function errorHandler(err, req, res, next) {
     if (err) {
-        res.status(500).json({ error: err });
-        res.json(err.message);
+        res.status(400).json({ error: err });
     }
 }
 

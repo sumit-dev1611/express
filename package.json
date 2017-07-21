@@ -1,0 +1,25 @@
+{
+  "name": "assignment1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "mongoose": "^4.11.3",
+    "mongoose-deep-populate": "^3.0.0",
+    "populate": "^5.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sumit-dev1611/express.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sumit-dev1611/express/issues"
+  },
+  "homepage": "https://github.com/sumit-dev1611/express#readme"
+}

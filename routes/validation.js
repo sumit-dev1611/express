@@ -1,4 +1,5 @@
 var md5 = require('md5');
+var _ = require('lodash');
 module.exports = {
     validateRegistration: (body, callback) => {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -33,6 +34,38 @@ module.exports = {
             body.password = md5(body.password);
             callback("", body);
         }
+    },
+
+    validateAccess: (body, callback) => {        
+        if ((new Date(body.expiry).getTime()) <= (new Date().getTime())) {
+            callback("Access time expired..Login Again!!");
+        }else{
+            callback("");
+        }
+    },
+
+    validateAddress: (body, callback) => {
+        if (body.user_id == null || body.user_id == "") {
+            callback("enter user id", null);
+        } else if (body.phone_no == null || body.phone_no == "") {
+            callback("enter phone no", null)
+        } else if (body.address.length) {
+            _.forEach(body.address, function(data, key) {
+                if (data.city == null || data.city == "") {
+                    callback("enter city", null);
+                } else if (data.state == null || data.state == "") {
+                    callback("enter state", null);
+                } else if (data.pin_code == null || data.pin_code == "") {
+                    callback("enter pin_code", null);
+                } else if (body.address.length == (key + 1)) {
+                    callback(null, body);
+                }
+            });
+        } else {
+            callback("enter address", null)
+
+        }
+
     }
-    
+
 };
