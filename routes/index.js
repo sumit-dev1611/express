@@ -81,6 +81,7 @@ router.post('/user/login/', function(req, res, next) {
 
 
 router.get('/user/get', function(req, res, next) {
+
     verifyAccess(req, function(access_token_data) {
         console.log(access_token_data)
         if (access_token_data) {
@@ -153,9 +154,11 @@ router.post('/user/address', function(req, res, next) {
                     res.json("Incorrect Access Token");;
                 }
             });
+
         }
     });
 });
+
 
 var verifyAccess = function(req, callback) {
     var ret;
