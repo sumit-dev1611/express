@@ -2,7 +2,9 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var routes = require('./routes/index.js');
-var db = require('./mongodb/db.js')
+var db = require('./mongodb/db.js');
+var cors = require("cors")
+app.use(cors())
 app.use(db())
 app.use(bodyParser.urlencoded({
     extended: true

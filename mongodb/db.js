@@ -27,11 +27,11 @@ module.exports = function() {
 
     var user_address = mongoose.Schema({
         user_id: { type: String, required: true ,ref:'users_model'},
-        address: {
+        address: [{
             city:String,
             state:String,
             pin_code:Number
-        },
+        }],
         phone_no: Number
     }, {
         collection: 'address',

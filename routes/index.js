@@ -85,13 +85,19 @@ router.get('/user/get', function(req, res, next) {
         if (err) {
             next(err);
         } else if (data) {
-            req.address_collection.find({user_id: data.user_id }).populate('user_id').exec(function(err, complete_data) {
+            validation.validateAccess(data, function(err) {
                 if (err) {
                     next(err);
-                } else if (complete_data) {
-                    res.json(complete_data)
                 } else {
-                    res.json("can't fetch data")
+                    req.address_collection.find({ user_id: data.user_id }).populate('user_id').exec(function(err, complete_data) {
+                        if (err) {
+                            next(err);
+                        } else if (complete_data) {
+                            res.json(complete_data)
+                        } else {
+                            res.json("can't fetch data")
+                        }
+                    });
                 }
             });
         } else {
@@ -123,14 +129,12 @@ router.get('/user/list/:page', function(req, res, next) {
     });
 });
 
-router.post('/user/address/:access_token', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+router.post('/user/address', function(req, res, next) {
     validation.validateAddress(req.body, function(err, data) {
         if (err) {
             next(err);
         } else {
-            req.access_token_collection.findOne({ access_token: req.params.access_token }, function(err, access_token_data) {
+            req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, access_token_data) {
                 if (err) {
                     next(err);
                 } else if (access_token_data) {
