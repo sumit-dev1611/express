@@ -81,10 +81,9 @@ router.post('/user/login/', function(req, res, next) {
 
 
 router.get('/user/get', function(req, res, next) {
-    req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, access_token_data) {
-        if (err) {
-            next(err);
-        } else if (access_token_data) {
+    verifyAccess(req, function(access_token_data) {
+        console.log(access_token_data)
+        if (access_token_data) {
             validation.validateAccess(access_token_data, function(err) {
                 if (err) {
                     next(err);
@@ -135,10 +134,9 @@ router.post('/user/address', function(req, res, next) {
         if (err) {
             next(err);
         } else {
-            req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, access_token_data) {
-                if (err) {
-                    next(err);
-                } else if (access_token_data) {
+            verifyAccess(req, function(access_token_data) {
+                console.log(access_token_data)
+                if (access_token_data) {
                     var userAddress = new req.address_collection({
                         user_id: data.user_id,
                         address: data.address,
@@ -155,10 +153,19 @@ router.post('/user/address', function(req, res, next) {
                     res.json("Incorrect Access Token");;
                 }
             });
-
         }
     });
 });
 
+var verifyAccess = function(req, callback) {
+    var ret;
+    req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, access_token_data) {
+        if (err) {
+            next(err);
+        } else {
+            callback(access_token_data)
+        }
+    });
+}
 
 module.exports = router;
