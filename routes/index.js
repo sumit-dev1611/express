@@ -81,15 +81,15 @@ router.post('/user/login/', function(req, res, next) {
 
 
 router.get('/user/get', function(req, res, next) {
-    req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, data) {
+    req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, access_token_data) {
         if (err) {
             next(err);
-        } else if (data) {
-            validation.validateAccess(data, function(err) {
+        } else if (access_token_data) {
+            validation.validateAccess(access_token_data, function(err) {
                 if (err) {
                     next(err);
                 } else {
-                    req.address_collection.find({ user_id: data.user_id }).populate('user_id').exec(function(err, complete_data) {
+                    req.address_collection.find({ user_id: access_token_data.user_id }).populate('user_id').exec(function(err, complete_data) {
                         if (err) {
                             next(err);
                         } else if (complete_data) {
@@ -107,8 +107,9 @@ router.get('/user/get', function(req, res, next) {
 });
 
 
-router.all('/user/delete/:access_token', function(req, res, next) {
-    req.users_collection.remove({ "_id": req.params.access_token }, function(err, result) {
+
+router.all('/user/delete', function(req, res, next) {
+    req.users_collection.remove({ "_id": req.query.access_token }, function(err, result) {
         if (err) {
             next(err);
         } else {
@@ -117,8 +118,8 @@ router.all('/user/delete/:access_token', function(req, res, next) {
     });
 });
 
-router.get('/user/list/:page', function(req, res, next) {
-    req.users_collection.find({}).skip((req.params.page) * 10).limit(10).exec(function(err, data) {
+router.get('/user/list', function(req, res, next) {
+    req.users_collection.find({}).skip((req.query.page) * 10).limit(10).exec(function(err, data) {
         if (err) {
             next(err);
         } else if (data) {
@@ -154,8 +155,10 @@ router.post('/user/address', function(req, res, next) {
                     res.json("Incorrect Access Token");;
                 }
             });
+
         }
     });
 });
+
 
 module.exports = router;
