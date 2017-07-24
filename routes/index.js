@@ -118,7 +118,7 @@ router.all('/user/delete', function(req, res, next) {
 });
 
 router.get('/user/list', function(req, res, next) {
-    req.users_collection.find({}).skip((req.query.page) * 10).limit(parseInt((req.query.limit),10)).exec(function(err, data) {
+    req.users_collection.find({}).skip((req.query.page) * 10).limit(parseInt(req.query.limit)).exec(function(err, data) {
         if (err) {
             next(err);
         } else if (data) {
