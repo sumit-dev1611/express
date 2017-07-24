@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express();
-var md5 = require('md5')
+var md5 = require('md5');
 var validation = require('./validation');
+var access = require('./auth');
 
 router.post('/user/register/', function(req, res, next) {
     validation.validateRegistration(req.body, function(err, data) {
@@ -81,10 +82,8 @@ router.post('/user/login/', function(req, res, next) {
 
 
 router.get('/user/get', function(req, res, next) {
-    req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, access_token_data) {
-        if (err) {
-            next(err);
-        } else if (access_token_data) {
+    access.verifyAccess(req, function(access_token_data) {
+        if (access_token_data) {
             validation.validateAccess(access_token_data, function(err) {
                 if (err) {
                     next(err);
@@ -119,7 +118,7 @@ router.all('/user/delete', function(req, res, next) {
 });
 
 router.get('/user/list', function(req, res, next) {
-    req.users_collection.find({}).skip((req.query.page) * 10).limit(10).exec(function(err, data) {
+    req.users_collection.find({}).skip((req.query.page) * 10).limit(parseInt(req.query.limit)).exec(function(err, data) {
         if (err) {
             next(err);
         } else if (data) {
@@ -135,10 +134,9 @@ router.post('/user/address', function(req, res, next) {
         if (err) {
             next(err);
         } else {
-            req.access_token_collection.findOne({ access_token: req.query.access_token }, function(err, access_token_data) {
-                if (err) {
-                    next(err);
-                } else if (access_token_data) {
+            access.verifyAccess(req, function(access_token_data) {
+                console.log(access_token_data)
+                if (access_token_data) {
                     var userAddress = new req.address_collection({
                         user_id: data.user_id,
                         address: data.address,
@@ -159,6 +157,5 @@ router.post('/user/address', function(req, res, next) {
         }
     });
 });
-
 
 module.exports = router;
