@@ -82,7 +82,13 @@ router.post('/user/login/', function(req, res, next) {
 
 
 router.get('/user/get', function(req, res, next) {
+<<<<<<< HEAD
     access.verifyAccess(req, function(access_token_data) {
+=======
+
+    verifyAccess(req, function(access_token_data) {
+        console.log(access_token_data)
+>>>>>>> c58c039558c000dd3b3a27445f2451cd982dfad7
         if (access_token_data) {
             validation.validateAccess(access_token_data, function(err) {
                 if (err) {
@@ -153,9 +159,11 @@ router.post('/user/address', function(req, res, next) {
                     res.json("Incorrect Access Token");;
                 }
             });
+
         }
     });
 });
+
 
 var verifyAccess = function(req, callback) {
     var ret;

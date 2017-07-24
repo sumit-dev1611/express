@@ -26,7 +26,7 @@ module.exports = function() {
     });
 
     var user_address = mongoose.Schema({
-        user_id: { type: String, required: true, ref: 'users_model' },
+        user_id: { type: String, required: true ,ref:'users_model'},
         address:  Array,
         phone_no: Number
     }, {
