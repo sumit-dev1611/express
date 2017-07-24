@@ -4,9 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "mongoose": "^4.11.3",
-    "mongoose-deep-populate": "^3.0.0",
-    "populate": "^5.0.1"
+    "mongoose": "^4.11.3"
   },
   "devDependencies": {},
   "scripts": {
