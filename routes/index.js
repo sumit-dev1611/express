@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express();
-var md5 = require('md5')
+var md5 = require('md5');
 var validation = require('./validation');
+var access = require('./auth');
 
 router.post('/user/register/', function(req, res, next) {
     validation.validateRegistration(req.body, function(err, data) {
@@ -81,8 +82,7 @@ router.post('/user/login/', function(req, res, next) {
 
 
 router.get('/user/get', function(req, res, next) {
-    verifyAccess(req, function(access_token_data) {
-        console.log(access_token_data)
+    access.verifyAccess(req, function(access_token_data) {
         if (access_token_data) {
             validation.validateAccess(access_token_data, function(err) {
                 if (err) {
@@ -134,7 +134,7 @@ router.post('/user/address', function(req, res, next) {
         if (err) {
             next(err);
         } else {
-            verifyAccess(req, function(access_token_data) {
+            access.verifyAccess(req, function(access_token_data) {
                 console.log(access_token_data)
                 if (access_token_data) {
                     var userAddress = new req.address_collection({
