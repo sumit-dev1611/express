@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express();
 var md5 = require('md5');
+var jwt = require('jsonwebtoken');
 var validation = require('./validation');
-var access = require('./auth');
 
 router.post('/user/register/', function(req, res, next) {
     validation.validateRegistration(req.body, function(err, data) {
@@ -37,41 +37,10 @@ router.post('/user/login/', function(req, res, next) {
                 if (err) {
                     next(err);
                 } else if (users_data) {
-                    req.access_token_collection.findOne({ user_id: users_data._id }, function(err, access_token_data) {
-                        if (err) {
-                            next(err);
-                        } else if (access_token_data) {
-                            var expiryDate = new Date();
-                            expiryDate.setHours(expiryDate.getHours() + 1);
-                            req.access_token_collection.findOneAndUpdate({ user_id: access_token_data.user_id }, {
-                                    $set: {
-                                        expiry: expiryDate
-                                    }
-                                },
-                                function(err, data) {
-                                    if (err) {
-                                        next(err);
-                                    } else {
-                                        res.json(data)
-                                    }
-                                });
-                        } else {
-                            var expiryDate = new Date();
-                            expiryDate.setHours(expiryDate.getHours() + 1);
-                            var access_Detail = new req.access_token_collection({
-                                user_id: users_data._id,
-                                access_token: md5(new Date()),
-                                expiry: expiryDate
-                            });
-                            access_Detail.save(function(err, data) {
-                                if (err) {
-                                    next(err);
-                                } else {
-                                    res.json(data)
-                                }
-                            });
-                        }
+                    var token = jwt.sign({user_id:users_data._id}, "abc", {
+                        expiresIn: 3600000
                     });
+                    res.json(token)
                 } else {
                     res.json('Not a user !!!     Get registered')
                 }
@@ -80,25 +49,24 @@ router.post('/user/login/', function(req, res, next) {
     });
 });
 
-
 router.get('/user/get', function(req, res, next) {
-    access.verifyAccess(req, function(access_token_data) {
-        if (access_token_data) {
-            validation.validateAccess(access_token_data, function(err) {
-                if (err) {
-                    next(err);
-                } else {
-                    req.address_collection.find({ user_id: access_token_data.user_id }).populate('user_id').exec(function(err, complete_data) {
-                        if (err) {
-                            next(err);
-                        } else if (complete_data) {
-                            res.json(complete_data)
-                        } else {
-                            res.json("can't fetch data")
-                        }
-                    });
-                }
-            });
+    jwt.verify(req.query.access_token, "abc", function(err, access_token_data) {
+        if (err) {
+            next(err);
+        } else if (access_token_data) {
+            if (access_token_data.exp >= parseInt(Date.now() / 1000)) {
+                req.address_collection.find({ user_id: access_token_data.user_id }).populate('user_id').exec(function(err, complete_data) {
+                    if (err) {
+                        next(err);
+                    } else if (complete_data) {
+                        res.json(complete_data)
+                    } else {
+                        res.json("can't fetch data")
+                    }
+                });
+            } else {
+                res.json("Access token has expired'");
+            }
         } else {
             res.json('data not found');
         }
@@ -133,27 +101,21 @@ router.post('/user/address', function(req, res, next) {
     validation.validateAddress(req.body, function(err, data) {
         if (err) {
             next(err);
-        } else {
-            access.verifyAccess(req, function(access_token_data) {
-                console.log(access_token_data)
-                if (access_token_data) {
-                    var userAddress = new req.address_collection({
-                        user_id: data.user_id,
-                        address: data.address,
-                        phone_no: data.phone_no
-                    });
-                    userAddress.save(function(err, data) {
-                        if (err) {
-                            next(err);
-                        } else {
-                            res.json(data)
-                        }
-                    });
+        } else if (data) {
+            var userAddress = new req.address_collection({
+                user_id: data.user_id,
+                address: data.address,
+                phone_no: data.phone_no
+            });
+            userAddress.save(function(err, data) {
+                if (err) {
+                    next(err);
                 } else {
-                    res.json("Incorrect Access Token");;
+                    res.json(data)
                 }
             });
-
+        } else {
+            res.json("Incorrect Access Token");;
         }
     });
 });
